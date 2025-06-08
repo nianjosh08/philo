@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavender Field</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, #a8d8ea 0%, #e6e6fa 100%);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .message-container {
+            position: absolute;
+            top: 20%;
+            text-align: center;
+            z-index: 100;
+            padding: 0 20px;
+        }
+
+        .main-message {
+            color: #4b0082;
+            font-size: clamp(20px, 5vw, 40px);
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+            opacity: 1;
+            transition: opacity 2s ease-in-out;
+        }
+
+        .sub-message {
+            color: #4b0082;
+            font-size: clamp(12px, 2vw, 20px);
+            font-style: italic;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .message-container.fade-out {
+            opacity: 0;
+        }
+
+        .lavender-field {
+            position: relative;
+            width: 100%;
+            height: 60vh;
+            margin-top: 20vh;
+            overflow: hidden;
+        }
+
+        .lavender-plant {
+            position: absolute;
+            bottom: 0;
+            width: 8px;
+            background: linear-gradient(to bottom, #3a5f0b 0%, #2c4a07 100%);
+            z-index: 1;
+        }
+
+        .lavender-head {
+            position: absolute;
+            width: 30px;
+            height: 60px;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #967bb6;
+            border-radius: 50% 50% 20% 20%;
+            box-shadow: 
+                inset 5px 0 10px rgba(120, 80, 160, 0.8),
+                inset -5px 0 10px rgba(120, 80, 160, 0.8);
+            z-index: 2;
+        }
+
+        .lavender-head::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 20px;
+            top: -10px;
+            left: 0;
+            background: #b399d4;
+            border-radius: 50%;
+            box-shadow: 
+                inset 3px 0 5px rgba(120, 80, 160, 0.8),
+                inset -3px 0 5px rgba(120, 80, 160, 0.8);
+        }
+
+        .lavender-head::after {
+            content: '';
+            position: absolute;
+            width: 80%;
+            height: 15px;
+            top: -5px;
+            left: 10%;
+            background: #d1b3e1;
+            border-radius: 50%;
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 20%;
+            background: linear-gradient(to bottom, #5a7247 0%, #3a5f0b 100%);
+            z-index: 0;
+        }
+
+        .lyrics-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            color: #4b0082;
+            font-size: 20px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 100;
+        }
+
+        .lyrics-container.active {
+            opacity: 1;
+        }
+
+        /* Hide the audio element completely */
+        #audioPlayer {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .lavender-plant {
+                width: 6px;
+            }
+            
+            .lavender-head {
+                width: 25px;
+                height: 50px;
+            }
+
+            .lyrics-container {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="message-container">
+        <div class="main-message">Look, philo! Lavenders! <br>Your favorite!</div>
+        <div class="sub-message">(Click anywhere to start the experience)</div>
+    </div>
+    
+    <div class="lyrics-container" id="lyrics"></div>
+    
+    <div class="lavender-field">
+        <div class="ground"></div>
+    </div>
+
+    <!-- Audio element with no controls -->
+    <audio id="audioPlayer" loop="false">
+        <source src="SIDE BY SIDE OFFICIAL MUSIC VIDEO - Jared Benjamin.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // Create lavender plants dynamically
+        const field = document.querySelector('.lavender-field');
+        const plantCount = window.innerWidth > 768 ? 30 : 15;
+        
+        for (let i = 0; i < plantCount; i++) {
+            const plant = document.createElement('div');
+            plant.className = 'lavender-plant';
+            
+            // Random plant height (between 30% and 80% of container)
+            const height = 30 + Math.random() * 50;
+            plant.style.height = `${height}%`;
+            
+            // Random horizontal position
+            const left = Math.random() * 100;
+            plant.style.left = `${left}%`;
+            
+            // Random slight tilt
+            const tilt = Math.random() * 20 - 10;
+            plant.style.transform = `rotate(${tilt}deg)`;
+            
+            // Create lavender flower head
+            const head = document.createElement('div');
+            head.className = 'lavender-head';
+            
+            // Random head size variation
+            const sizeScale = 0.8 + Math.random() * 0.4;
+            head.style.width = `${sizeScale * 30}px`;
+            head.style.height = `${sizeScale * 60}px`;
+            
+            plant.appendChild(head);
+            field.appendChild(plant);
+        }
+
+        // Lyrics data
+        const lyrics = [
+            { time: 4.05, text: "Lover I need some peace, to ease my mind" },
+            { time: 15.27, text: "Down on my knees, so sweet, your touch is so divine" },
+            { time: 26.04, text: "And oh, I'll keep you close, oh" },
+            { time: 38.28, text: "If we fall, we'll fall together" },
+            { time: 43.65, text: "Side by side, we'll climb back up again" },
+            { time: 48.65, text: "And if we grow, we'll grow old together" },
+            { time: 53.62, text: "Side by side, until we meet the end" },
+            { time: 62.92, text: "Until we meet the end" },
+            { time: 70.32, text: "Remember how it started, remember how it felt" },
+            { time: 74.27, text: "It was way simpler" },
+            { time: 76.50, text: "And oh so familiar" },
+            { time: 79.04, text: "Didn't have to think at all" },
+            { time: 81.56, text: "Now everything is growing and I feel half as tall" },
+            { time: 84.76, text: "Wish it was way simpler" },
+            { time: 86.64, text: "It's no longer familiar, and I don't feel myself at all" },
+            { time: 90.85, text: "I'll keep you close (ohh, ohh)" },
+            { time: 103.33, text: "If we fall, we'll fall together" },
+            { time: 109.28, text: "Side by side, we'll climb back up again" },
+            { time: 114.72, text: "And if we grow, we'll grow old together" },
+            { time: 119.65, text: "Side by side, until we meet the end" },
+            { time: 129.36, text: "Until we meet the end" },
+            { time: 147.53, text: "If we fall, we'll fall together" },
+            { time: 152.92, text: "Side by side, we'll climb back up again" },
+            { time: 156.04, text: "And if we grow, we'll grow old together" },
+            { time: 165.28, text: "Side by side, until we meet the end" },
+            { time: 173.06, text: "Until we meet the end" },
+            { time: 185.15, text: "I love you" }
+        ];
+
+        const audioPlayer = document.getElementById('audioPlayer');
+        const lyricsContainer = document.getElementById('lyrics');
+        const messageContainer = document.querySelector('.message-container');
+        const mainMessage = document.querySelector('.main-message');
+        const subMessage = document.querySelector('.sub-message');
+
+        // Show sub-message after 3 seconds
+        setTimeout(() => {
+            subMessage.style.opacity = 1;
+        }, 3000);
+
+        // Function to handle audio play
+        function startAudioExperience() {
+            // Fade out message and start audio
+            messageContainer.classList.add('fade-out');
+            
+            // Try to play audio (may be blocked by browser without user interaction)
+            const playPromise = audioPlayer.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    // Auto-play was prevented - show a message or handle it
+                    console.log("Auto-play prevented");
+                });
+            }
+        }
+
+        // Start audio when user clicks anywhere
+        document.body.addEventListener('click', function() {
+            // Only start if the sub-message is visible (after 3 seconds)
+            if (parseFloat(subMessage.style.opacity) > 0) {
+                startAudioExperience();
+            }
+        }, { once: true });
+
+        // Fade out message when audio starts playing
+        audioPlayer.addEventListener('play', function() {
+            startLyrics();
+        });
+
+        // Redirect to index.html when audio ends
+        audioPlayer.addEventListener('ended', function() {
+            window.location.href = "index.html";
+        });
+
+        // Function to start lyrics display
+        function startLyrics() {
+            let currentLyricIndex = 0;
+            
+            const updateLyrics = () => {
+                const currentTime = audioPlayer.currentTime;
+                
+                // Find the current lyric
+                while (currentLyricIndex < lyrics.length - 1 && 
+                       currentTime >= lyrics[currentLyricIndex + 1].time) {
+                    currentLyricIndex++;
+                }
+                
+                if (currentTime >= lyrics[currentLyricIndex].time) {
+                    lyricsContainer.textContent = lyrics[currentLyricIndex].text;
+                    lyricsContainer.classList.add('active');
+                } else {
+                    lyricsContainer.classList.remove('active');
+                }
+                
+                // Continue updating
+                if (!audioPlayer.paused) {
+                    requestAnimationFrame(updateLyrics);
+                }
+            };
+            
+            updateLyrics();
+        }
+    </script>
+</body>
+</html>

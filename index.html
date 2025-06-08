@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystery Questions</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: background-color 1s;
+            overflow: hidden;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            transition: all 0.5s;
+            position: relative;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .yes-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .no-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+        }
+        
+        .question {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .option {
+            padding: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            background-color: #d0d0d0;
+        }
+        
+        .correct {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .incorrect {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .final-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            color: white;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 1s infinite alternate;
+        }
+        
+        .moon {
+            width: 100px;
+            height: 100px;
+            background-color: #f5f5dc;
+            border-radius: 50%;
+            box-shadow: 0 0 30px #f5f5dc;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .poem {
+            text-align: center;
+            font-size: 18px;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeInPoem 8s forwards;
+            max-width: 80%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .denied {
+            color: red;
+            font-size: 24px;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .dismiss {
+            display: none;
+            margin-top: 20px;
+            font-style: italic;
+            color: #666;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes twinkle {
+            from { opacity: 0.3; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInPoem {
+            0% { opacity: 0; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        .x-mark {
+            font-size: 100px;
+            color: red;
+            margin-bottom: 20px;
+        }
+        
+        .next-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            font-size: 24px;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 1s;
+            z-index: 101;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Are you who I think you are?</h1>
+        <div class="btn-container">
+            <button class="yes-btn" onclick="startQuestions()">Yes</button>
+            <button class="no-btn" onclick="showDismiss()">No</button>
+        </div>
+        
+        <div class="dismiss">
+            Then what are you doing here? Scram!
+        </div>
+        
+        <!-- Question 1 -->
+        <div class="question" id="q1">
+            <h2>What is your favorite color?</h2>
+            <div class="options">
+                <div class="option" onclick="checkAnswer(1, 'purple')">Purple</div>
+                <div class="option" onclick="checkAnswer(1, 'blue')">Blue</div>
+                <div class="option" onclick="checkAnswer(1, 'red')">Red</div>
+            </div>
+        </div>
+        
+        <!-- Question 2 -->
+        <div class="question" id="q2">
+            <h2>When is your birthday?</h2>
+            <div class="options">
+                <div class="option" onclick="checkAnswer(2, 'August 8, 2005')">August 8, 2005</div>
+                <div class="option" onclick="checkAnswer(2, 'July 4, 2000')">July 4, 2000</div>
+                <div class="option" onclick="checkAnswer(2, 'December 25, 1999')">December 25, 1999</div>
+            </div>
+        </div>
+        
+        <!-- Question 3 -->
+        <div class="question" id="q3">
+            <h2>Dogs or cats?</h2>
+            <div class="options">
+                <div class="option" onclick="checkAnswer(3, 'dog')">Dogs</div>
+                <div class="option" onclick="checkAnswer(3, 'cat')">Cats</div>
+                <div class="option" onclick="checkAnswer(3, 'neither')">Neither</div>
+            </div>
+        </div>
+        
+        <!-- Final Question -->
+        <div class="question" id="finalQ">
+            <h2>Would you be my Penelope?</h2>
+            <div class="btn-container">
+                <button class="yes-btn" onclick="showPoem()">Yes</button>
+                <button class="yes-btn" onclick="showPoem()">Yes</button>
+            </div>
+        </div>
+        
+        <div class="denied" id="denied">
+            <div class="x-mark">✕</div>
+            <div>Access denied. You're not her. Go home</div>
+        </div>
+    </div>
+    
+    <div class="final-screen" id="finalScreen">
+        <div class="stars" id="stars"></div>
+        <div class="moon"></div>
+        <div class="poem">
+            I can be your light through darkness when<br>
+            You cross your path alone<br>
+            I can be the comfort when you're sad<br>
+            And you can call me home<br>
+            I can be your friend in ups and downs<br>
+            And I'm always here for you<br>
+            I will always be your one and only moon &lt;3
+        </div>
+    </div>
+    
+    <button class="next-btn" id="nextBtn">></button>
+    
+    <script>
+        let currentQuestion = 0;
+        let answersCorrect = 0;
+        const totalQuestions = 3;
+        
+        function startQuestions() {
+            document.querySelector('.btn-container').style.display = 'none';
+            document.querySelector('#q1').style.display = 'block';
+            currentQuestion = 1;
+        }
+        
+        function showDismiss() {
+            document.querySelector('.btn-container').style.display = 'none';
+            document.querySelector('.dismiss').style.display = 'block';
+        }
+        
+        function checkAnswer(qNum, selectedAnswer) {
+            const options = document.querySelectorAll(`#q${qNum} .option`);
+            
+            // Determine correct answer based on question
+            let correctAnswer;
+            if (qNum === 1) correctAnswer = 'purple';
+            else if (qNum === 2) correctAnswer = 'August 8, 2005';
+            else if (qNum === 3) correctAnswer = 'dog';
+            
+            // Mark options as correct/incorrect
+            options.forEach(option => {
+                if (option.textContent === correctAnswer) {
+                    option.classList.add('correct');
+                } else {
+                    option.classList.add('incorrect');
+                }
+                option.style.pointerEvents = 'none';
+            });
+            
+            // Check if answer was correct
+            if (selectedAnswer === correctAnswer) {
+                answersCorrect++;
+            }
+            
+            // Move to next question or show result after delay
+            setTimeout(() => {
+                document.querySelector(`#q${qNum}`).style.display = 'none';
+                
+                if (qNum < totalQuestions) {
+                    document.querySelector(`#q${qNum+1}`).style.display = 'block';
+                } else {
+                    showFinalQuestion();
+                }
+            }, 1000);
+        }
+        
+        function showFinalQuestion() {
+            if (answersCorrect === totalQuestions) {
+                document.querySelector('#finalQ').style.display = 'block';
+            } else {
+                document.querySelector('#denied').style.display = 'block';
+            }
+        }
+        
+        function showPoem() {
+            document.querySelector('.container').style.display = 'none';
+            document.querySelector('#finalScreen').style.display = 'flex';
+            createStars();
+            
+            // Show the next button after poem appears (8 seconds)
+            setTimeout(() => {
+                document.getElementById('nextBtn').style.opacity = '1';
+            }, 8000);
+        }
+        
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 100;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Random position
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                
+                // Random size
+                const size = Math.random() * 3;
+                
+                // Random animation delay
+                const delay = Math.random() * 2;
+                
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDelay = `${delay}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Event listener for the next button
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            window.location.href = 'page2.html';
+        });
+    </script>
+</body>
+</html>

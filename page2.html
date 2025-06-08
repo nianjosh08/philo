@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sunflower Garden</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #000;
+      transition: background-color 2s;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .message-container {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      text-align: center;
+      color: white;
+      opacity: 0;
+      transition: opacity 2s;
+      font-size: 1rem;
+      z-index: 100;
+      padding: 0 10px;
+    }
+
+    .garden {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .sunflower {
+      position: absolute;
+      width: 120px;
+      height: 240px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      z-index: 10;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .sunflower:hover {
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    .stem {
+      position: absolute;
+      width: 10px;
+      height: 160px;
+      background-color: #3a5f0b;
+      left: 55px;
+      top: 80px;
+    }
+
+    .flower {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      background-color: #FFD700;
+      border-radius: 50%;
+      left: 20px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    }
+
+    .center {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background-color: #8B4513;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .leaf {
+      position: absolute;
+      width: 50px;
+      height: 25px;
+      background-color: #3a5f0b;
+      border-radius: 50%;
+      left: 15px;
+      top: 150px;
+      transform: rotate(-20deg);
+    }
+
+    .leaf:nth-of-type(5) {
+      left: 55px;
+      top: 140px;
+      transform: rotate(20deg);
+    }
+
+    .hidden-flowers {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 2s;
+      pointer-events: none;
+    }
+
+    .hidden-sunflower {
+      position: absolute;
+      width: 80px;
+      height: 160px;
+    }
+
+    .hidden-stem {
+      position: absolute;
+      width: 6px;
+      height: 120px;
+      background-color: #3a5f0b;
+      left: 37px;
+      top: 40px;
+    }
+
+    .hidden-flower {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      background-color: #FFD700;
+      border-radius: 50%;
+      left: 10px;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .hidden-center {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background-color: #8B4513;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .hidden-leaf {
+      position: absolute;
+      width: 30px;
+      height: 15px;
+      background-color: #3a5f0b;
+      border-radius: 50%;
+      left: 5px;
+      top: 100px;
+      transform: rotate(-20deg);
+    }
+
+    .hidden-leaf:nth-of-type(5) {
+      left: 35px;
+      top: 90px;
+      transform: rotate(20deg);
+    }
+
+    .rose {
+      position: absolute;
+      width: 60px;
+      height: 140px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 2s;
+      z-index: 20;
+    }
+
+    .rose-stem {
+      position: absolute;
+      width: 5px;
+      height: 100px;
+      background-color: #228B22;
+      left: 28px;
+      top: 40px;
+    }
+
+    .rose-flower {
+      position: absolute;
+      width: 45px;
+      height: 45px;
+      background-color: #FF0000;
+      border-radius: 50%;
+      left: 7px;
+      top: 0;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    }
+
+    .rose-leaf {
+      position: absolute;
+      width: 25px;
+      height: 12px;
+      background-color: #228B22;
+      border-radius: 50%;
+      left: 15px;
+      top: 80px;
+      transform: rotate(-20deg);
+    }
+
+    .rose-leaf:nth-of-type(4) {
+      left: 35px;
+      top: 70px;
+      transform: rotate(20deg);
+    }
+
+    .next-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  color: #fff;
+  background-color: #444; /* Dark but visible */
+  border: none;
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  text-align: center;
+  line-height: 48px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 2s, background-color 0.3s, transform 0.3s;
+  z-index: 101;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.next-btn:hover {
+  background-color: #666;
+  transform: translateX(-50%) scale(1.15);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+}
+
+
+
+    @media (max-width: 768px) {
+      .sunflower {
+        width: 90px;
+        height: 180px;
+      }
+
+      .flower {
+        width: 60px;
+        height: 60px;
+        left: 15px;
+      }
+
+      .stem {
+        left: 40px;
+        height: 120px;
+        top: 60px;
+      }
+
+      .leaf {
+        width: 40px;
+        height: 20px;
+        top: 120px;
+      }
+
+      .message-container {
+        font-size: 0.9rem;
+      }
+
+      .next-btn {
+        font-size: 20px;
+        bottom: 15px;
+        right: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="message-container" id="message">
+    Among all these sunflowers, you'll always be my one and only rose
+  </div>
+
+  <div class="garden">
+    <div class="sunflower" id="mainSunflower">
+      <div class="stem"></div>
+      <div class="flower">
+        <div class="center"></div>
+      </div>
+      <div class="leaf"></div>
+      <div class="leaf"></div>
+    </div>
+
+    <div class="hidden-flowers" id="hiddenGarden"></div>
+
+    <div class="rose" id="rose">
+      <div class="rose-stem"></div>
+      <div class="rose-flower"></div>
+      <div class="rose-leaf"></div>
+      <div class="rose-leaf"></div>
+    </div>
+  </div>
+
+  <button class="next-btn" id="nextBtn">></button>
+
+  <script>
+    const hiddenGarden = document.getElementById('hiddenGarden');
+    const numFlowers = 20;
+
+    const distanceFromCenter = (x, y) => {
+      const cx = 50, cy = 50;
+      return Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+    };
+
+    for (let i = 0; i < numFlowers; i++) {
+      const flower = document.createElement('div');
+      flower.className = 'hidden-sunflower';
+
+      let x, y;
+      do {
+        x = Math.random() * 90 + 5;
+        y = Math.random() * 60 + 20;
+      } while (distanceFromCenter(x, y) < 15);
+
+      flower.style.left = `${x}%`;
+      flower.style.top = `${y}%`;
+
+      const rotate = Math.random() * 30 - 15;
+      flower.style.transform = `rotate(${rotate}deg)`;
+
+      flower.innerHTML = `
+        <div class="hidden-stem"></div>
+        <div class="hidden-flower">
+          <div class="hidden-center"></div>
+        </div>
+        <div class="hidden-leaf"></div>
+        <div class="hidden-leaf"></div>
+      `;
+
+      hiddenGarden.appendChild(flower);
+    }
+
+    document.getElementById('mainSunflower').addEventListener('click', function () {
+      document.body.style.backgroundColor = '#87CEEB';
+      document.getElementById('hiddenGarden').style.opacity = '1';
+      document.getElementById('rose').style.opacity = '1';
+      document.getElementById('message').style.opacity = '1';
+      this.style.opacity = '0';
+      this.style.pointerEvents = 'none';
+
+      // Show next button after the garden and rose have appeared (after 5 seconds)
+      setTimeout(() => {
+        document.getElementById('nextBtn').style.opacity = '1';
+      }, 5000);
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', function() {
+      window.location.href = 'page3.html';
+    });
+  </script>
+</body>
+</html>
