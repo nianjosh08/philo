@@ -135,6 +135,28 @@
             opacity: 1;
         }
 
+        .continue-button {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            background-color: #967bb6;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            z-index: 100;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .continue-button:hover {
+            background-color: #b399d4;
+        }
+
         /* Hide the audio element completely */
         #audioPlayer {
             display: none;
@@ -153,6 +175,11 @@
             .lyrics-container {
                 font-size: 16px;
             }
+
+            .continue-button {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
         }
     </style>
 </head>
@@ -163,6 +190,7 @@
     </div>
     
     <div class="lyrics-container" id="lyrics"></div>
+    <button class="continue-button" id="continueButton">Continue to Home</button>
     
     <div class="lavender-field">
         <div class="ground"></div>
@@ -244,6 +272,7 @@
         const messageContainer = document.querySelector('.message-container');
         const mainMessage = document.querySelector('.main-message');
         const subMessage = document.querySelector('.sub-message');
+        const continueButton = document.getElementById('continueButton');
 
         // Show sub-message after 3 seconds
         setTimeout(() => {
@@ -279,14 +308,20 @@
             startLyrics();
         });
 
-        // Redirect to index.html when audio ends
-        audioPlayer.addEventListener('ended', function() {
+        // Function to show continue button
+        function showContinueButton() {
+            continueButton.style.opacity = 1;
+        }
+
+        // Redirect when continue button is clicked
+        continueButton.addEventListener('click', function() {
             window.location.href = "index.html";
         });
 
         // Function to start lyrics display
         function startLyrics() {
             let currentLyricIndex = 0;
+            let finalLyricShown = false;
             
             const updateLyrics = () => {
                 const currentTime = audioPlayer.currentTime;
@@ -300,6 +335,13 @@
                 if (currentTime >= lyrics[currentLyricIndex].time) {
                     lyricsContainer.textContent = lyrics[currentLyricIndex].text;
                     lyricsContainer.classList.add('active');
+                    
+                    // Check if this is the final lyric
+                    if (currentLyricIndex === lyrics.length - 1 && !finalLyricShown) {
+                        finalLyricShown = true;
+                        // Show continue button after a short delay
+                        setTimeout(showContinueButton, 2000);
+                    }
                 } else {
                     lyricsContainer.classList.remove('active');
                 }
