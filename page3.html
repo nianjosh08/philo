@@ -197,7 +197,7 @@
     </div>
 
     <!-- Audio element with no controls -->
-    <audio id="audioPlayer" loop="false">
+    <audio id="audioPlayer">
         <source src="SIDE BY SIDE OFFICIAL MUSIC VIDEO - Jared Benjamin.mp3" type="audio/mp3">
         Your browser does not support the audio element.
     </audio>
@@ -354,6 +354,12 @@
             
             updateLyrics();
         }
+
+        // Show continue button when audio finishes
+audioPlayer.addEventListener('ended', function () {
+    showContinueButton();
+});
+
     </script>
 </body>
-</html>
+</html> 
